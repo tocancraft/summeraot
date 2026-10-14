@@ -1,0 +1,46 @@
+[
+  {
+    "original": "animations/attack_rock.animation.json",
+    "sha256": "38fb97cb37768a226d40e7dfb6bf47ce89d71ae9050e5d4e18cbe3d845640f61"
+  },
+  {
+    "original": "animations/attack3titan.animation.json",
+    "sha256": "19e4faa104bf0f3c2d3ff011633a0af5817c8e51003d5837819cc4ad05deefef"
+  },
+  {
+    "original": "animations/rock_attack.animation.json",
+    "sha256": "4da3da51dcc99c1a4d6e4742f0d733772f41aa91968d827e8600efb890566eb4"
+  },
+  {
+    "original": "geo/attack3titan.geo.json",
+    "sha256": "995e59d7c8521dfc3990cafcfdf54f0db71b1620cd0ebe6016d8ef63306e7093"
+  },
+  {
+    "original": "geo/rock.geo.json",
+    "sha256": "9d2599f5cd653f10977e80330e9e0a3487553de042245dd57aaec20546eda34f"
+  },
+  {
+    "original": "models/item/attack_3_syringe.json",
+    "sha256": "ec3d9f9bc3086b19c7d9359f32fe9bc608edd72b66aadc60dff4e5e5c67b51c3"
+  },
+  {
+    "original": "textures/item/attack_3_syringe.png",
+    "sha256": "c5aee8197e5b678ff3e40b374d2fe58477174506730e731b159dcc3a4cc6b468"
+  },
+  {
+    "original": "textures/entity/attack3titan2.png",
+    "sha256": "96e86ae8020a14801862572fe9b3166bfb2d401c504c1c18ab8771a7c29f235e"
+  },
+  {
+    "original": "textures/entity/attack_titan_rock.png",
+    "sha256": "a5ee541f3bf164ed54a3ab004bcb2a5920644178162e9cc6a1b8e6486f074b73"
+  },
+  {
+    "original": "textures/entity/attack3titan.png",
+    "sha256": "d2a010b387ae2e335c58bcfdaf63519bb11a362a29b60bac640b1ce6dbf58816"
+  },
+  {
+    "original": "textures/gui/ability_titan_pick_up_rock.png",
+    "sha256": "28ff6749946d208f8c61511172ea165986cfa399ffdec12a4737a7db1e58cdab"
+  }
+]
