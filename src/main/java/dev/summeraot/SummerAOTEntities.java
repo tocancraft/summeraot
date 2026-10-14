@@ -20,29 +20,29 @@ public final class SummerAOTEntities {
 
     // Dimensões extraídas de SpringDAOTEntities (3x15, 1x1, 1x1, 2x2).
     public static final EntityType<KrugerTitanEntity> KRUGER = Registry.register(
-        Registries.ENTITY_TYPE, Identifier.of(SummerAOTMod.MOD_ID, "attack_3_titan"),
+        Registries.ENTITY_TYPE, Identifier.of(SummerAOTMod.MOD_ID, "krugger_titan"),
         EntityType.Builder.create(KrugerTitanEntity::new, SpawnGroup.MISC)
             .dimensions(3.0f, 15.0f).eyeHeight(14.0f)
             .maxTrackingRange(160).trackingTickInterval(1)
-            .build("summeraot:attack_3_titan")
+            .build("summeraot:krugger_titan")
     );
     public static final EntityType<KrugerNapeEntity> KRUGER_NAPE = Registry.register(
-        Registries.ENTITY_TYPE, Identifier.of(SummerAOTMod.MOD_ID, "attack_3_titan_nape"),
+        Registries.ENTITY_TYPE, Identifier.of(SummerAOTMod.MOD_ID, "krugger_titan_nape"),
         EntityType.Builder.create(KrugerNapeEntity::new, SpawnGroup.MISC)
             .dimensions(1.0f, 1.0f).maxTrackingRange(160).trackingTickInterval(1)
-            .build("summeraot:attack_3_titan_nape")
+            .build("summeraot:krugger_titan_nape")
     );
     public static final EntityType<KrugerEyeEntity> KRUGER_EYE = Registry.register(
-        Registries.ENTITY_TYPE, Identifier.of(SummerAOTMod.MOD_ID, "attack_3_titan_eye"),
+        Registries.ENTITY_TYPE, Identifier.of(SummerAOTMod.MOD_ID, "krugger_titan_eye"),
         EntityType.Builder.create(KrugerEyeEntity::new, SpawnGroup.MISC)
             .dimensions(1.0f, 1.0f).maxTrackingRange(160).trackingTickInterval(1)
-            .build("summeraot:attack_3_titan_eye")
+            .build("summeraot:krugger_titan_eye")
     );
     public static final EntityType<KrugerGrabEntity> KRUGER_GRAB = Registry.register(
-        Registries.ENTITY_TYPE, Identifier.of(SummerAOTMod.MOD_ID, "attack_3_titan_grab"),
+        Registries.ENTITY_TYPE, Identifier.of(SummerAOTMod.MOD_ID, "krugger_titan_grab"),
         EntityType.Builder.create(KrugerGrabEntity::new, SpawnGroup.MISC)
             .dimensions(2.0f, 2.0f).maxTrackingRange(160).trackingTickInterval(1)
-            .build("summeraot:attack_3_titan_grab")
+            .build("summeraot:krugger_titan_grab")
     );
 
     public static void register() {

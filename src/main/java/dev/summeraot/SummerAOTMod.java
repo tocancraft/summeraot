@@ -12,6 +12,6 @@ public final class SummerAOTMod implements ModInitializer {
     public void onInitialize() {
         SummerAOTEntities.register();
         KrugerCommands.register();
-        LOGGER.info("SummerAOT: Kruger registrou entidades e seleção de variante.");
+        LOGGER.info("SummerAOT: Krugger Titan registrado como poder independente.");
     }
 }

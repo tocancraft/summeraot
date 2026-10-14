@@ -2,6 +2,7 @@ package dev.summeraot.entity;
 
 import daot.AttackTitanEntity;
 import dev.summeraot.SummerAOTEntities;
+import dev.summeraot.KruggerAbilityPolicy;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,13 +10,50 @@ import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
 /**
- * Variante de Kruger: reaproveita movimentação, controles, ataques, stamina,
- * endurecimento, berserk, bossbar e animações do DAOT.
- * Substitui somente as hitboxes e o recurso visual.
+ * Krugger Titan: reutiliza movimentacao e ataques do DAOT, mas nao pode
+ * usar endurecimento nem Berserk. A identidade do poder pertence exclusivamente
+ * ao SummerAOT; a heranca Java nao concede nem exige o poder attack.
  */
 public class KrugerTitanEntity extends AttackTitanEntity {
     public KrugerTitanEntity(EntityType<? extends HostileEntity> type, World world) {
         super(type, world);
+    }
+
+    // ID 6 = Harden; ID 9 = Berserk no SpringAOT 3.5.2.
+    // Bloqueia ambas as habilidades mesmo se algum controle externo
+    // tentar encaminha-las para a classe AttackTitanEntity do DAOT.
+    @Override
+    public void triggerAbility(int abilityId) {
+        if (!KruggerAbilityPolicy.isAllowedAbility(abilityId)) {
+            return;
+        }
+        super.triggerAbility(abilityId);
+    }
+
+    // Protecao adicional contra endurecimento aplicado por outros fluxos,
+    // como carregamento de NBT ou chamadas feitas por outros mods.
+    @Override
+    public void setHardeningMode(int mode) {
+        super.setHardeningMode(0);
+    }
+
+    // A classe-base usa este estado tanto em combate como para escalar
+    // paredes com as maos endurecidas. Krugger nao possui essa habilidade.
+    @Override
+    public boolean isArmsHardened() {
+        return false;
+    }
+
+    // DAOT inclui escalada que pode depender de punhos endurecidos.
+    // Krugger nao pode entrar nesse estado por controles nem chamadas externas.
+    @Override
+    public void setTitanClimbing(boolean climbing) {
+        super.setTitanClimbing(false);
+    }
+
+    @Override
+    public boolean isTitanClimbing() {
+        return false;
     }
 
     @Override
@@ -67,8 +105,8 @@ public class KrugerTitanEntity extends AttackTitanEntity {
         super.onPlayerShift(player);
         if (bossBar != null) {
             String label = player.getCommandTags().contains("titan_stealth")
-                ? "Attack Titan 3"
-                : player.getName().getString() + " - Attack Titan 3";
+                ? "Krugger Titan"
+                : player.getName().getString() + " - Krugger Titan";
             bossBar.setName(Text.literal(label));
         }
     }

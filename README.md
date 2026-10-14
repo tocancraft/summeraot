@@ -1,55 +1,49 @@
-# SummerAOT — Kruger 0.1.0-alpha.1
+# SummerAOT — Krugger Titan 0.2.0-alpha.1
 
-**Addon Fabric de Minecraft 1.21.1 (Java 21) que seleciona Kruger como variante do Attack Titan do Danny's AoT.**
+Addon Fabric para Minecraft 1.21.1 com o **Krugger Titan** como poder independente do Attack Titan original.
 
-O SpringAOT **não precisa ser instalado**. A estrutura visual de Kruger veio do SpringAOT 3.5.2, enquanto controles, ataques-base, stamina, hardening, berserk, hitboxes e ciclo de shift são reutilizados do **DAOT como dependência externa**.
+## Estrutura e funcionalidade
 
-## Status verificável
+- `summeraot:krugger_titan` é uma nova entidade shifter; o Attack Titan do DAOT continua registrado e utilizável separadamente.
+- O poder pertence ao SummerAOT e é persistido na tag de jogador `summeraot.power.krugger`; não depende de `attack`, `attack_3`, nem concede essas tags.
+- Usa classes de ataque, hitboxes e montagem do Danny's AoT como **dependência externa**, sem reempacotar suas classes.
+- Usa o modelo e as 37 animações originais de Kruger do SpringAOT, e a **textura exata fornecida pelo usuário** em `textures/entity/krugger_titan.png`.
+- Bloqueia endurecimento (ID 6) e Berserk (ID 9), desativa endurecimento e escalada por mãos endurecidas. A política de habilidades própria expõe somente `ground_stomp`, `attack_kick`, `attack_protect`, `heavy_punch` e `grab` como habilidades elegíveis para uma futura árvore de skills do SummerAOT.
+- Os comandos `grant`/`revoke` requerem operador. A transformação usa `/summeraot krugger shift` como ponto de entrada independente nesta alpha.
 
-- Código-fonte preparado. **Não compilado nem testado no Minecraft** neste ambiente.
-- Entidade `summeraot:attack_3_titan` e três hitboxes (`_nape`, `_eye`, `_grab`).
-- Modelo de 21 bones, 37 animações e texturas originais, incluindo variação alternativa.
-- Mixin de substituição **pontual do objeto AttackTitanEntity criado na rotina de shift do DAOT**, permitindo que a rotina DAOT permaneça responsável pelos seus controles, raios, explosão, efeitos e verificações. **Este ponto é sensível a versões do DAOT.**
-- Seleção `attack_3` apenas quando o jogador já possui a tag `attack` reconhecida pelo DAOT.
-- Três hitboxes utilizam lógica original do DAOT para dano/grab; reprodução *idêntica* dos parâmetros da versão Spring ainda requer testes e ajustes.
-- Sincronização client-side com bones feita com TitanBoneCache do DAOT; pacote específico de sincronização do Spring **não foi portado**.
-- Seringa, heavy punch especial, rock pickup e menu de habilidades Spring: **arquivos ou referências preparados, lógica ainda pendente**. Não chamar isto de port completo.
+## Compilação no Windows 10
 
-## Pré-requisitos
+1. Faça cópia de segurança do diretório do SummerAOT e de qualquer mundo de testes.
+2. Copie os arquivos deste projeto para `C:\Users\Matheus Grossi\Desktop\summeraot`, mesclando as pastas `src` e substituindo os arquivos antigos.
+3. Mantenha `libs/dannys-aot-2.5.0.jar` em seu local: **não** está incluído neste ZIP.
+4. Abra PowerShell na raiz do repositório e execute `./gradlew.bat --no-daemon clean build` (o Gradle Wrapper do repositório anterior pode ser mantido).
+5. O JAR gerado estará em `build/libs/summeraot-0.2.0-alpha.1.jar`.
+6. Use uma instância isolada Minecraft 1.21.1 Fabric com DAOT, GeckoLib, Fabric API e as demais dependências dele. NÃO instale simultaneamente o SpringAOT.
 
-- Minecraft 1.21.1 + Fabric Loader, Fabric API, GeckoLib 4.8.3, Danny's AoT com dependências próprias.
-- Java JDK 21.
-- Gradle **9.2.1** (Fabric Loom **1.14.10**). O Gradle 8.12 não é compatível com este projeto.
-- JAR **original** do DAOT em `libs/dannys-aot-2.5.0.jar` (nome externo; o mod declara versão interna 2.4.1).
+## Comandos
 
-Não incluir JAR de terceiros no produto distribuído. Use uma cópia local do original adquirido legitimamente.
-
-## Windows PowerShell
-
-```powershell
-cd "C:\MinecraftDev\SummerAOT_Kruger_0.1.0_Source"
-New-Item -ItemType Directory -Path .\libs -Force
-Copy-Item "C:\Caminho\do\dannys-aot-2.5.0.jar" .\libs\dannys-aot-2.5.0.jar
-& "C:\MinecraftDev\tools\gradle-9.2.1\bin\gradle.bat" --no-daemon clean build
+```mcfunction
+/summeraot krugger grant <jogador>  # operador, poder independente
+/summeraot krugger revoke <jogador> # operador
+/summeraot krugger status          # consulta o próprio poder
+/summeraot krugger shift           # transforma quem possui o poder
+/summeraot krugger summon          # operador, invoca entidade de teste
 ```
 
-Se Gradle estiver no PATH, use `gradle --no-daemon clean build`. JAR compilado (se o build passar) em `build/libs/summeraot-0.1.0-alpha.1.jar`.
+## Limitações conhecidas da alpha
 
-## Testes no jogo
+- Compilação e execução no Minecraft **ainda não verificadas para esta versão**. A versão anterior (`0.1.0-alpha.1`) foi compilada e carregou em jogo.
+- O comando de transformação é novo e experimental: reutiliza `AttackTitanEntity.onPlayerShift` e não equivale ao pipeline integral de ascensão, cooldown, stamina, HUD e desbloqueios do DAOT.
+- Como a entidade Java herda `AttackTitanEntity`, o HUD original pode mostrar ícones ou rótulos de Attack, inclusive endurecimento, **mesmo com a habilidade bloqueada**. Um HUD inteiramente próprio ainda será necessário.
+- Embora o catálogo próprio já exclua Berserk e endurecimento, o HUD herdado do DAOT pode mostrar opções antigas. O HUD próprio ainda não foi implementado.
+- O soco pesado está reservado no catálogo, mas a execução especial do SpringAOT ainda não foi portada.
+- Esta versão ainda não contém seringa funcional, concessão automática de poder, integração com tecla padrão de transformação nem o soco pesado adicional do SpringAOT.
+- O ID da entidade mudou de `summeraot:attack_3_titan` para `summeraot:krugger_titan`. Mundos antigos podem perder entidades da alpha anterior; faça backup e teste em mundo novo.
+- Modificações futuras no DAOT podem exigir atualização do addon.
 
-Com DAOT e SummerAOT instalados, **não instale SpringAOT ao mesmo tempo**. Em mundo de desenvolvimento:
+## Origem dos recursos e licenças
 
-- `/summeraot kruger summon` (operador) invoca entidade para inspeção visual; não concede poder.
-- Jogador com poder Attack normal do Danny: `/summeraot kruger select` seleciona variante Kruger.
-- Transforme-se pelo **mecanismo normal do Danny**. A classe deve ser substituída por Kruger durante a criação.
-- `/summeraot kruger vanilla` remove o seletor da variante, mantendo o poder do DAOT.
+- DAOT: depende de JAR instalado separadamente; não copia as classes do Danny.
+- SpringAOT 3.5.2: modelos e animações preservados no namespace `summeraot`; licença SpringAOT incluída para referência.
+- Textura principal do Krugger: fornecida pelo usuário, copiada integralmente sem edição.
 
-Não atribuímos o poder Attack automaticamente nem modificamos o verificador de integridade do DAOT.
-
-Se o Mixin não encontrar seu ponto de injeção, o Fabric deverá interromper a inicialização. **Não ignore erros de Mixin** — significa que a versão do DAOT não é compatível e precisamos adaptar o ponto de integração.
-
-## Proveniência e licença
-
-SpringAOT 3.5.2 (`CC0-1.0` informado no seu `fabric.mod.json`). O DAOT declara `ARR`; suas classes são dependência externa, sem cópia no SummerAOT. Verifique permissões de todos os ativos antes de publicar ou redistribuir. Referências do Spring não garantem propriedade sobre ativos de terceiros.
-
-Veja `PORTABILIDADE_KRUGER.md` e execute `python tools/validar_recursos.py` para verificação dos recursos.

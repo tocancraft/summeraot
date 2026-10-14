@@ -1,6 +1,6 @@
 {
-  "entity.summeraot.attack_3_titan": "Eren Kruger — Attack Titan",
-  "entity.summeraot.attack_3_titan_nape": "Kruger Nape Hitbox",
-  "entity.summeraot.attack_3_titan_eye": "Kruger Eyes Hitbox",
-  "entity.summeraot.attack_3_titan_grab": "Kruger Grab Hitbox"
+  "entity.summeraot.krugger_titan": "Krugger Titan",
+  "entity.summeraot.krugger_titan_nape": "Krugger Nape",
+  "entity.summeraot.krugger_titan_eye": "Krugger Eye",
+  "entity.summeraot.krugger_titan_grab": "Krugger Grab"
 }

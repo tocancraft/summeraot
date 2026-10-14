@@ -1,8 +1,14 @@
 {
   "required": true,
-  "minVersion": "0.8",
   "package": "dev.summeraot.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": ["AttackTitanSpawnMixin"],
-  "injectors": { "defaultRequire": 1 }
+  "mixins": [
+    "KruggerNetworkingMixin"
+  ],
+  "client": [
+    "KruggerHudMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

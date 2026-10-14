@@ -1,31 +1,25 @@
-# Como compilar o SummerAOT Kruger no Windows 10
+# Compilar SummerAOT Krugger 0.2.0-alpha.1 no Windows 10
 
-O projeto ainda não passou por build e teste no jogo. Este pacote contém o mesmo código da versão 0.1.0, acrescido do instalador local de Gradle Wrapper; não inclui o JAR do DAOT nem uma distribuição do Gradle.
-
-## Pré-requisitos
-
-- Java 21 instalado (já confirmado no ambiente do usuário).
-- Gradle 8.12 instalado em `C:\gradle-8.12-bin\gradle-8.12\bin\gradle.bat` (já confirmado).
-- Internet para baixar Gradle 9.2.1, Fabric Loom, Minecraft, Fabric API e GeckoLib.
-- JAR original do DAOT em `libs/dannys-aot-2.5.0.jar` (o script tenta copiá-lo automaticamente do projeto anterior).
-
-## Execução no PowerShell
-
-Extraia o ZIP em `C:\MinecraftDev\SummerAOT_Kruger_0.1.0_Source` e execute:
+1. Feche o Minecraft, faça backup da pasta `C:\Users\Matheus Grossi\Desktop\summeraot`.
+2. Copie o conteúdo deste ZIP para a pasta `summeraot`, **mesclando** as pastas `src` e `tools` e substituindo os arquivos antigos. Não crie uma pasta `src` dentro de outra `src`.
+3. **Preserve** os arquivos existentes `gradlew.bat`, `gradlew`, a pasta `gradle/wrapper/` e a dependência `libs/dannys-aot-2.5.0.jar` que já funcionavam na versão 0.1.0.
+4. Abra PowerShell dentro de `summeraot` e execute **uma linha apenas**:
 
 ```powershell
-cd 'C:\MinecraftDev\SummerAOT_Kruger_0.1.0_Source'
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\compilar_windows.ps1
+.\gradlew.bat --no-daemon clean build
 ```
 
-O script usa o Gradle 8.12 em uma **pasta temporária vazia**, gera os arquivos `gradlew.bat` e `gradle/wrapper` apontando para o Gradle 9.2.1, e executa `gradlew.bat --no-daemon clean build` na raiz do SummerAOT. Assim não é preciso instalar manualmente o Gradle 9.2.1 ou alterar o PATH. O Wrapper *ainda baixa* o Gradle 9.2.1 pela internet na primeira execução.
+5. O resultado esperado é `build/libs/summeraot-0.2.0-alpha.1.jar`. Ignore `-sources.jar`.
+6. Teste numa instância separada com Minecraft 1.21.1 Fabric, DAOT e suas dependências. Não instale o SpringAOT junto.
 
-Build bem-sucedido: `build/libs/summeraot-0.1.0-alpha.1.jar`. Não instale `-sources.jar`.
+## Testar o poder (operador e jogador no mundo)
 
-Se falhar, gere o log manualmente:
-
-```powershell
-.\gradlew.bat --no-daemon clean build --stacktrace *> compilacao-summeraot.log
+```mcfunction
+/summeraot krugger grant <jogador>
+/summeraot krugger status
+/summeraot krugger shift
 ```
 
-O projeto é Fabric 1.21.1, não NeoForge; não instale no Gurupicraft NeoForge.
+Os ataques Berserk (ID 9) e endurecimento (ID 6) não devem responder. O HUD herdado do DAOT poderá continuar mostrando botões antigos até termos um HUD próprio. O soco pesado especial do Spring ainda não foi integrado funcionalmente.
+
+**Status:** este código ainda não passou por compilação ou teste dentro do Minecraft. A versão 0.1.0-alpha.1 anterior foi compilada e testada com sucesso.

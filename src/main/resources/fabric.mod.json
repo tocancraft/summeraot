@@ -3,14 +3,19 @@
   "id": "summeraot",
   "version": "${version}",
   "name": "SummerAOT",
-  "description": "Addon independente para Danny's AoT: Kruger (Attack Titan III)",
-  "authors": ["SummerAOT project"],
+  "description": "Krugger Titan independente: comandos nativos DAOT, HUD sem endurecimento/Berserk.",
+  "authors": [
+    "SummerAOT project"
+  ],
   "environment": "*",
   "entrypoints": {
-    "main": ["dev.summeraot.SummerAOTMod"],
-    "client": ["dev.summeraot.client.SummerAOTClient"]
+    "main": [
+      "dev.summeraot.SummerAOTMod"
+    ],
+    "client": [
+      "dev.summeraot.client.SummerAOTClient"
+    ]
   },
-  "mixins": ["summeraot.mixins.json"],
   "depends": {
     "fabricloader": ">=0.16.9",
     "minecraft": "~1.21.1",
@@ -19,5 +24,10 @@
     "geckolib": ">=4.8.3",
     "dannys-aot": "*"
   },
-  "breaks": { "springdaot": "*" }
+  "breaks": {
+    "springdaot": "*"
+  },
+  "mixins": [
+    "summeraot.mixins.json"
+  ]
 }
