@@ -46,7 +46,7 @@ public abstract class KruggerNetworkingMixin {
     )
     private static boolean summeraot$recognizeKruggerPower(PlayerEntity player, TitanPowerType type) {
         if (type == TitanPowerType.ATTACK && player instanceof ServerPlayerEntity serverPlayer
-                && SummerAOTPower.hasKrugger(serverPlayer)) {
+                && SummerAOTPower.isKruggerSelected(serverPlayer)) {
             return true;
         }
         return PowerAuthority.hasShifter(player, type);
@@ -66,7 +66,7 @@ public abstract class KruggerNetworkingMixin {
             double z,
             float yaw,
             CallbackInfo ci) {
-        if (!SummerAOTPower.hasKrugger(player)) {
+        if (!SummerAOTPower.isKruggerSelected(player)) {
             return;
         }
         ci.cancel();

@@ -19,6 +19,8 @@ import net.minecraft.client.render.entity.EntityRenderer;
 public final class SummerAOTClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        OmniKruggerClientState.register();
+        OmniKruggerScreenBridge.register();
         EntityRendererRegistry.register(SummerAOTEntities.KRUGER, KrugerTitanRenderer::new);
         EntityRendererRegistry.register(SummerAOTEntities.KRUGER_NAPE,
             context -> (EntityRenderer<KrugerNapeEntity>)(EntityRenderer<?>) new AttackTitanNapeRenderer(context));

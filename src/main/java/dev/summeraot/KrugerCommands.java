@@ -31,6 +31,10 @@ public final class KrugerCommands {
             activeDispatcher = dispatcher;
             dispatcher.register(CommandManager.literal("summeraot")
                 .then(CommandManager.literal("krugger")
+                    .then(CommandManager.literal("select")
+                        .executes(ctx -> selectPower(ctx.getSource())))
+                    .then(CommandManager.literal("vanilla")
+                        .executes(ctx -> selectVanilla(ctx.getSource())))
                     .then(CommandManager.literal("status")
                         .executes(ctx -> status(ctx.getSource())))
                     .then(CommandManager.literal("daotcheck")
@@ -125,7 +129,34 @@ public final class KrugerCommands {
         ServerPlayerEntity player = source.getPlayerOrThrow();
         boolean owns = SummerAOTPower.hasKrugger(player);
         source.sendFeedback(() -> Text.literal(
-            "SummerAOT Krugger Titan: " + (owns ? "poder ativo" : "poder nao concedido")), false);
+            "SummerAOT Krugger Titan: " + (owns ? "concedido" : "nao concedido")
+                + ", selecionado=" + SummerAOTPower.isKruggerSelected(player)), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int selectPower(ServerCommandSource source) throws CommandSyntaxException {
+        ServerPlayerEntity player = source.getPlayerOrThrow();
+        if (!SummerAOTPower.hasKrugger(player)) {
+            source.sendError(Text.literal("SummerAOT: voce nao possui o Krugger Titan."));
+            return 0;
+        }
+        if (!player.isAlive() || player.isSpectator() || player.hasVehicle()) {
+            source.sendError(Text.literal("SummerAOT: nao e possivel trocar enquanto estiver transformado."));
+            return 0;
+        }
+        SummerAOTPower.selectKrugger(player);
+        source.sendFeedback(() -> Text.literal("SummerAOT: Krugger Titan selecionado."), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int selectVanilla(ServerCommandSource source) throws CommandSyntaxException {
+        ServerPlayerEntity player = source.getPlayerOrThrow();
+        if (!player.isAlive() || player.isSpectator() || player.hasVehicle()) {
+            source.sendError(Text.literal("SummerAOT: nao e possivel trocar enquanto estiver transformado."));
+            return 0;
+        }
+        // Não altera a seleção nativa persistida pelo OmniShifter.
+        SummerAOTPower.selectVanilla(player);
         return Command.SINGLE_SUCCESS;
     }
 

@@ -42,3 +42,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
     withSourcesJar()
 }
+
+// OmniShifter original (CC0), incorporado como mod Fabric aninhado.
+tasks.named('jar') {
+    from('embedded/omnishifter-1.3.0.jar') {
+        into 'META-INF/jars'
+    }
+}

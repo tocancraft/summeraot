@@ -3,7 +3,8 @@
   "package": "dev.summeraot.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "KruggerNetworkingMixin"
+    "KruggerNetworkingMixin",
+    "OmniNativeSelectMixin"
   ],
   "client": [
     "KruggerHudMixin"
