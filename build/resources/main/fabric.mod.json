@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "id": "summeraot",
-  "version": "0.0.6-alpha.3",
+  "version": "0.0.7-alpha.1",
   "name": "SummerAOT",
-  "description": "SummerAOT: Krugger, Grisha e Armin independentes com aldeoes, seringas e ovos de spawn.",
+  "description": "SummerAOT: shifters independentes, aldeoes com skins personalizadas e ovos de spawn para os titas do DAOT.",
   "authors": [
     "SummerAOT project",
     "Antigravity (OmniShifter, CC0)"

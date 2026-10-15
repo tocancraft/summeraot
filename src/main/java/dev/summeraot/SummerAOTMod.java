@@ -9,6 +9,8 @@ import dev.summeraot.grisha.GrishaCommands;
 import dev.summeraot.armin.ArminColossalEntities;
 import dev.summeraot.armin.ArminCommands;
 import dev.summeraot.npc.SummerNpcRegistry;
+import dev.summeraot.npc.NativeNpcRegistry;
+import dev.summeraot.npc.NativeNpcCombat;
 import dev.summeraot.npc.SummerNpcLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +27,13 @@ public final class SummerAOTMod implements ModInitializer {
         GrishaEntities.initialize();
         ArminColossalEntities.initialize();
         SummerNpcRegistry.initialize();
+        NativeNpcRegistry.initialize();
+        NativeNpcCombat.initialize();
         SummerNpcLogic.initialize();
         OmniKruggerNetwork.register();
         KrugerCommands.register();
         GrishaCommands.register();
         ArminCommands.register();
-        LOGGER.info("SummerAOT 0.0.6-alpha.3: Colossal ofensivo e transformacoes NPC completas.");
+        LOGGER.info("SummerAOT 0.0.7-alpha.1: aldeoes e ovos das formas originais do DAOT.");
     }
 }

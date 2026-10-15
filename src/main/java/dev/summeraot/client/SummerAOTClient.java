@@ -9,6 +9,9 @@ import daot.AttackTitanNapeRenderer;
 import dev.summeraot.SummerAOTEntities;
 import dev.summeraot.npc.SummerNpcRegistry;
 import dev.summeraot.npc.SummerNpcRenderer;
+import dev.summeraot.npc.NativeNpcRenderer;
+import dev.summeraot.npc.NativeNpcRegistry;
+import dev.summeraot.npc.NativeNpcVariant;
 import dev.summeraot.npc.ShifterVariant;
 import dev.summeraot.grisha.GrishaEntities;
 import dev.summeraot.armin.ArminColossalEntities;
@@ -43,6 +46,10 @@ public final class SummerAOTClient implements ClientModInitializer {
         EntityRendererRegistry.register(SummerNpcRegistry.KRUGGER_VILLAGER, context -> new SummerNpcRenderer(context, ShifterVariant.KRUGGER));
         EntityRendererRegistry.register(SummerNpcRegistry.GRISHA_VILLAGER, context -> new SummerNpcRenderer(context, ShifterVariant.GRISHA));
         EntityRendererRegistry.register(SummerNpcRegistry.ARMIN_VILLAGER, context -> new SummerNpcRenderer(context, ShifterVariant.ARMIN));
+        for (NativeNpcVariant variant : NativeNpcVariant.values()) {
+            EntityRendererRegistry.register(NativeNpcRegistry.villagerType(variant),
+                    context -> new NativeNpcRenderer(context, variant));
+        }
         OmniKruggerClientState.register();
         OmniKruggerScreenBridge.register();
         EntityRendererRegistry.register(SummerAOTEntities.KRUGER, KrugerTitanRenderer::new);

@@ -20,18 +20,33 @@ public final class SummerNpcShiftEffects {
     private SummerNpcShiftEffects() {}
 
     public static void onNpcShift(ServerWorld world, HostileEntity titan, ShifterVariant variant) {
+        onNpcShift(world, titan, variant == ShifterVariant.ARMIN,
+                variant == ShifterVariant.ARMIN ? TitanSpawnPayload.TYPE_COLOSSAL : TitanSpawnPayload.TYPE_ATTACK);
+    }
+
+    /** Mantem os IDs do evento de surgimento correspondentes aos titas originais. */
+    public static void onNpcShift(ServerWorld world, HostileEntity titan, NativeNpcVariant variant) {
+        int type = switch (variant) {
+            case COLOSSAL -> TitanSpawnPayload.TYPE_COLOSSAL;
+            case ARMORED -> TitanSpawnPayload.TYPE_ARMORED;
+            case FEMALE -> TitanSpawnPayload.TYPE_FEMALE;
+            case WARHAMMER -> TitanSpawnPayload.TYPE_WARHAMMER;
+            case ATTACK, JAW, CART -> TitanSpawnPayload.TYPE_ATTACK;
+        };
+        onNpcShift(world, titan, variant.isColossal(), type);
+    }
+
+    private static void onNpcShift(ServerWorld world, HostileEntity titan, boolean colossal, int type) {
         double x = titan.getX();
         double y = titan.getY();
         double z = titan.getZ();
-        boolean colossal = variant == ShifterVariant.ARMIN;
 
         // Mesmo raio cinematografico do DAOT, agora no instante da transformacao.
         ModNetworking.spawnShiftLightning(world, x, y, z);
 
         // O DAOT envia esse payload quando o jogador se transforma. O cliente
         // reproduz som com atraso conforme a distancia e particulas de shift.
-        TitanSpawnPayload event = new TitanSpawnPayload(x, y, z, titan.getId(),
-                colossal ? TitanSpawnPayload.TYPE_COLOSSAL : TitanSpawnPayload.TYPE_ATTACK);
+        TitanSpawnPayload event = new TitanSpawnPayload(x, y, z, titan.getId(), type);
         for (ServerPlayerEntity player : world.getPlayers()) {
             if (player.squaredDistanceTo(x, y, z) <= 512.0D * 512.0D) {
                 ServerPlayNetworking.send(player, event);
