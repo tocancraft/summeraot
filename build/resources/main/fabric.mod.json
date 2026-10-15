@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "id": "summeraot",
-  "version": "0.0.3-alpha.7",
+  "version": "0.0.4-alpha.1",
   "name": "SummerAOT",
-  "description": "SummerAOT: Krugger Titan independente e seleção múltipla integrada com OmniShifter 1.3.0 (CC0).",
+  "description": "SummerAOT: Krugger e Grisha Titan independentes e seleção múltipla integrada com OmniShifter 1.3.0 (CC0).",
   "authors": [
     "SummerAOT project",
     "Antigravity (OmniShifter, CC0)"

@@ -12,6 +12,9 @@ public final class SummerAOTPower {
     public static final String KRUGGER_TAG = "summeraot.power.krugger";
     public static final String KRUGGER_ACTIVE_TAG = "summeraot.selection.krugger";
 
+    public static final String GRISHA_TAG = "summeraot.power.grisha";
+    public static final String GRISHA_ACTIVE_TAG = "summeraot.selection.grisha";
+
     private SummerAOTPower() {}
 
     public static boolean hasKrugger(ServerPlayerEntity player) {
@@ -38,13 +41,45 @@ public final class SummerAOTPower {
     }
 
     public static boolean selectKrugger(ServerPlayerEntity player) {
-        boolean changed = hasKrugger(player) && player.addCommandTag(KRUGGER_ACTIVE_TAG);
+        if (!hasKrugger(player)) return false;
+        boolean changed = player.addCommandTag(KRUGGER_ACTIVE_TAG);
+        changed |= player.removeCommandTag(GRISHA_ACTIVE_TAG);
+        OmniKruggerNetwork.sync(player);
+        return changed;
+    }
+
+    public static boolean hasGrisha(ServerPlayerEntity player) {
+        return player.getCommandTags().contains(GRISHA_TAG);
+    }
+
+    public static boolean isGrishaSelected(ServerPlayerEntity player) {
+        return hasGrisha(player) && player.getCommandTags().contains(GRISHA_ACTIVE_TAG);
+    }
+
+    public static boolean grantGrisha(ServerPlayerEntity player) {
+        boolean added = player.addCommandTag(GRISHA_TAG);
+        OmniKruggerNetwork.sync(player);
+        return added;
+    }
+
+    public static boolean revokeGrisha(ServerPlayerEntity player) {
+        player.removeCommandTag(GRISHA_ACTIVE_TAG);
+        boolean removed = player.removeCommandTag(GRISHA_TAG);
+        OmniKruggerNetwork.sync(player);
+        return removed;
+    }
+
+    public static boolean selectGrisha(ServerPlayerEntity player) {
+        if (!hasGrisha(player)) return false;
+        boolean changed = player.addCommandTag(GRISHA_ACTIVE_TAG);
+        changed |= player.removeCommandTag(KRUGGER_ACTIVE_TAG);
         OmniKruggerNetwork.sync(player);
         return changed;
     }
 
     public static boolean selectVanilla(ServerPlayerEntity player) {
         boolean changed = player.removeCommandTag(KRUGGER_ACTIVE_TAG);
+        changed |= player.removeCommandTag(GRISHA_ACTIVE_TAG);
         OmniKruggerNetwork.sync(player);
         return changed;
     }

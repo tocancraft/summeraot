@@ -32,9 +32,12 @@ public final class OmniKruggerNetwork {
 
     public static void register() {
         PayloadTypeRegistry.playC2S().register(KruggerSelectC2SPayload.ID, KruggerSelectC2SPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(GrishaSelectC2SPayload.ID, GrishaSelectC2SPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(KruggerStateS2CPayload.ID, KruggerStateS2CPayload.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(KruggerSelectC2SPayload.ID, (payload, context) ->
                 context.server().execute(() -> selectKrugger(context.player())));
+        ServerPlayNetworking.registerGlobalReceiver(GrishaSelectC2SPayload.ID, (payload, context) ->
+                context.server().execute(() -> selectGrisha(context.player())));
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
                 server.execute(() -> sync(handler.player)));
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> sync(newPlayer));
@@ -116,6 +119,36 @@ public final class OmniKruggerNetwork {
         sync(player);
     }
 
+    private static void selectGrisha(ServerPlayerEntity player) {
+        if (!SummerAOTPower.hasGrisha(player)) {
+            player.sendMessage(Text.literal("SummerAOT: voce nao possui Grisha Titan."), true);
+            sync(player);
+            return;
+        }
+        if (SummerAOTPower.isGrishaSelected(player)) {
+            sync(player);
+            return;
+        }
+        if (!player.isAlive() || player.isSpectator() || player.hasVehicle()) {
+            player.sendMessage(Text.literal("SummerAOT: nao e possivel trocar enquanto transformado."), true);
+            sync(player);
+            return;
+        }
+        long now = System.currentTimeMillis();
+        long previous = nativeCooldownSince(player.getUuid());
+        if (!player.isCreative() && now - previous < COOLDOWN_MS) {
+            long remaining = Math.max(1, (COOLDOWN_MS - (now - previous) + 999) / 1000);
+            player.sendMessage(Text.literal("SummerAOT: aguarde " + remaining + "s para trocar de tita."), true);
+            sync(player);
+            return;
+        }
+        SummerAOTPower.selectGrisha(player);
+        if (!player.isCreative()) setNativeCooldownSince(player.getUuid(), now);
+        strikeCosmeticLightning(player);
+        player.sendMessage(Text.literal("Poder ativo: Grisha Titan"), true);
+        sync(player);
+    }
+
     private static void strikeCosmeticLightning(ServerPlayerEntity player) {
         if (!(player.getWorld() instanceof ServerWorld world)) return;
         LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
@@ -136,7 +169,8 @@ public final class OmniKruggerNetwork {
         ServerPlayNetworking.send(player, new KruggerStateS2CPayload(
                 SummerAOTPower.hasKrugger(player),
                 SummerAOTPower.isKruggerSelected(player),
-                nativeSelectedOrdinal(player), ends));
+                nativeSelectedOrdinal(player), ends,
+                SummerAOTPower.hasGrisha(player), SummerAOTPower.isGrishaSelected(player)));
     }
 
     /** Read the authoritative native active power from the Omni persistent state. */

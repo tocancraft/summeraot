@@ -1,18 +1,11 @@
 package dev.summeraot.client;
 
-/**
- * Short-lived client-only selection preview.
- *
- * The UI responds on the click; ownership, cooldown, actual power, lightning and
- * transformation remain entirely server-authoritative. An accepted server sync
- * commits and clears the preview; a rejected/timed-out request returns to the
- * last server-confirmed power. Never send a second request while pending.
- */
+/** Optimistic UI only. Native game state remains server-authoritative. */
 public final class ActivePowerPreview {
     private static final int NONE = -2;
     private static final int KRUGGER = -1;
+    private static final int GRISHA = -3;
     private static final long REQUEST_TIMEOUT_MS = 2500L;
-
     private int pendingPower = NONE;
     private long expiresAt;
 
@@ -21,39 +14,30 @@ public final class ActivePowerPreview {
         pendingPower = ordinal;
         expiresAt = now + REQUEST_TIMEOUT_MS;
     }
-
-    public void kruggerClicked(long now) {
-        pendingPower = KRUGGER;
-        expiresAt = now + REQUEST_TIMEOUT_MS;
-    }
+    public void kruggerClicked(long now) { select(KRUGGER, now); }
+    public void grishaClicked(long now) { select(GRISHA, now); }
+    private void select(int value, long now) { pendingPower = value; expiresAt = now + REQUEST_TIMEOUT_MS; }
 
     public boolean pending(long now) {
         if (pendingPower == NONE) return false;
-        if (now >= expiresAt) {
-            reset();
-            return false;
-        }
+        if (now >= expiresAt) { reset(); return false; }
         return true;
     }
-
-    public boolean displayedKrugger(boolean confirmed, long now) {
-        return pending(now) ? pendingPower == KRUGGER : confirmed;
+    public boolean displayedKrugger(boolean selected, long now) {
+        return pending(now) ? pendingPower == KRUGGER : selected;
     }
-
+    public boolean displayedGrisha(boolean selected, long now) {
+        return pending(now) ? pendingPower == GRISHA : selected;
+    }
     public int displayedNative(int confirmed, long now) {
-        return pending(now) ? (pendingPower == KRUGGER ? -1 : pendingPower) : confirmed;
+        return pending(now) ? (pendingPower >= 0 ? pendingPower : -1) : confirmed;
     }
-
-    public void serverSync(boolean kruggerSelected, int nativeOrdinal) {
+    public void serverSync(boolean kruggerSelected, boolean grishaSelected, int nativeOrdinal) {
         if (pendingPower == NONE) return;
         if (pendingPower == KRUGGER && kruggerSelected) reset();
-        else if (pendingPower >= 0 && !kruggerSelected && nativeOrdinal == pendingPower) reset();
-        // A stale sync is not a rejection. Keep the preview until an accepted
-        // authoritative selection arrives, or the short timeout expires.
+        else if (pendingPower == GRISHA && grishaSelected) reset();
+        else if (pendingPower >= 0 && !kruggerSelected && !grishaSelected
+                && nativeOrdinal == pendingPower) reset();
     }
-
-    public void reset() {
-        pendingPower = NONE;
-        expiresAt = 0L;
-    }
+    public void reset() { pendingPower = NONE; expiresAt = 0L; }
 }

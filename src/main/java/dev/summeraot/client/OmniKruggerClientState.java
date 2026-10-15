@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 
 /** Server-confirmed state plus a short-lived, reversible UI-only click preview. */
 public final class OmniKruggerClientState {
+    public static boolean grishaOwned = false;
+    public static boolean grishaSelected = false;
     public static boolean owned = false;
     public static boolean selected = false;
     /** Server-confirmed active DAOT power; -1 means none. */
@@ -23,6 +25,8 @@ public final class OmniKruggerClientState {
     }
 
     private static void reset() {
+        grishaOwned = false;
+        grishaSelected = false;
         owned = false;
         selected = false;
         nativePowerOrdinal = -1;
@@ -35,6 +39,14 @@ public final class OmniKruggerClientState {
 
     public static void previewKrugger() {
         PREVIEW.kruggerClicked(System.currentTimeMillis());
+    }
+
+    public static void previewGrisha() {
+        PREVIEW.grishaClicked(System.currentTimeMillis());
+    }
+
+    public static boolean displayedGrisha() {
+        return PREVIEW.displayedGrisha(grishaSelected, System.currentTimeMillis());
     }
 
     public static boolean isRequestPending() {
@@ -50,12 +62,15 @@ public final class OmniKruggerClientState {
     }
 
     private static void update(KruggerStateS2CPayload payload) {
+        grishaOwned = payload.grishaOwned();
+        grishaSelected = payload.grishaSelected();
         owned = payload.owned();
         selected = payload.selected();
         nativePowerOrdinal = payload.nativePowerOrdinal();
         cooldownEndsAt = payload.cooldownEndsAt();
-        PREVIEW.serverSync(selected, nativePowerOrdinal);
-        if (!owned && PREVIEW.displayedKrugger(false, System.currentTimeMillis())) {
+        PREVIEW.serverSync(selected, grishaSelected, nativePowerOrdinal);
+        if ((!owned && PREVIEW.displayedKrugger(false, System.currentTimeMillis()))
+                || (!grishaOwned && PREVIEW.displayedGrisha(false, System.currentTimeMillis()))) {
             PREVIEW.reset(); // Server revoked Krugger while its selection was pending.
         }
         try {

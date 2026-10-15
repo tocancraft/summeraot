@@ -2,6 +2,7 @@ package dev.summeraot.mixin;
 
 import dev.summeraot.client.KruggerAbilityHud;
 import dev.summeraot.entity.KrugerTitanEntity;
+import dev.summeraot.grisha.entity.GrishaTitanEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
@@ -28,11 +29,15 @@ public abstract class KruggerHudMixin {
     private static void summeraot$drawOwnHud(DrawContext context, RenderTickCounter tickCounter,
                                              CallbackInfo ci) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || !(client.player.getVehicle() instanceof KrugerTitanEntity krugger)) {
+        if (client.player == null) return;
+        Object mount = client.player.getVehicle();
+        if (!(mount instanceof KrugerTitanEntity) && !(mount instanceof GrishaTitanEntity)) {
             return;
         }
         ci.cancel();
-        if (!client.options.hudHidden && !krugger.isDismounting()) {
+        boolean dismounting = mount instanceof KrugerTitanEntity krugger
+                ? krugger.isDismounting() : ((GrishaTitanEntity) mount).isDismounting();
+        if (!client.options.hudHidden && !dismounting) {
             KruggerAbilityHud.render(context);
         }
     }

@@ -1,9 +1,12 @@
 package dev.summeraot.mixin;
 
 import daot.PowerAuthority;
+import daot.AttackTitanEntity;
 import daot.TitanPowerType;
 import daot.network.ModNetworking;
 import dev.summeraot.SummerAOTEntities;
+import dev.summeraot.grisha.GrishaEntities;
+import dev.summeraot.grisha.entity.GrishaTitanEntity;
 import dev.summeraot.SummerAOTMod;
 import dev.summeraot.SummerAOTPower;
 import dev.summeraot.entity.KrugerTitanEntity;
@@ -23,17 +26,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  *
  * O DAOT tem um enum fechado de oito tipos, portanto o ATTACK e usado
  * somente como canal interno de despacho da animacao / stamina.
- * A entidade criada e o poder persistido continuam sendo KRUGGER.
+ * A entidade criada e o poder persistido continuam sendo KRUGGER ou GRISHA.
  *
  * Referencia estrutural: implementacao de ModNetworkingMixin do
- * SpringAOT 3.5.2, adaptada apenas para o Krugger.
+ * SpringAOT 3.5.2, adaptada para os poderes independentes do SummerAOT.
  */
 @Mixin(value = ModNetworking.class, remap = false)
 public abstract class KruggerNetworkingMixin {
 
     /**
      * O DAOT consulta PowerAuthority.hasShifter(ATTACK) durante o Shift.
-     * A resposta local a essa consulta aceita o Krugger, sem alterar
+     * A resposta local a essa consulta aceita Krugger ou Grisha, sem alterar
      * TitanPowerData nem atribuir o poder Attack ao jogador.
      * Para todos os outros tipos e jogadores, a regra original e preservada.
      */
@@ -46,7 +49,8 @@ public abstract class KruggerNetworkingMixin {
     )
     private static boolean summeraot$recognizeKruggerPower(PlayerEntity player, TitanPowerType type) {
         if (type == TitanPowerType.ATTACK && player instanceof ServerPlayerEntity serverPlayer
-                && SummerAOTPower.isKruggerSelected(serverPlayer)) {
+                && (SummerAOTPower.isKruggerSelected(serverPlayer)
+                    || SummerAOTPower.isGrishaSelected(serverPlayer))) {
             return true;
         }
         return PowerAuthority.hasShifter(player, type);
@@ -55,7 +59,7 @@ public abstract class KruggerNetworkingMixin {
     /**
      * O DAOT ja executou suas verificacoes, consumo de stamina e a fase
      * de transformacao. No instante em que criaria seu Attack Titan,
-     * o SummerAOT cria a entidade propria Krugger.
+     * o SummerAOT cria a entidade propria do poder selecionado.
      */
     @Inject(method = "spawnAttackTitan", at = @At("HEAD"), cancellable = true)
     private static void summeraot$spawnKrugger(
@@ -66,7 +70,8 @@ public abstract class KruggerNetworkingMixin {
             double z,
             float yaw,
             CallbackInfo ci) {
-        if (!SummerAOTPower.isKruggerSelected(player)) {
+        boolean grishaSelected = SummerAOTPower.isGrishaSelected(player);
+        if (!SummerAOTPower.isKruggerSelected(player) && !grishaSelected) {
             return;
         }
         ci.cancel();
@@ -74,14 +79,17 @@ public abstract class KruggerNetworkingMixin {
         if (!player.isAlive() || player.isSpectator()) {
             return;
         }
-        if (player.getVehicle() instanceof KrugerTitanEntity) {
+        if (player.getVehicle() instanceof KrugerTitanEntity
+                || player.getVehicle() instanceof GrishaTitanEntity) {
             return;
         }
 
-        KrugerTitanEntity titan = SummerAOTEntities.KRUGER.create(world);
+        AttackTitanEntity titan = grishaSelected
+                ? GrishaEntities.GRISHA_TITAN.create(world)
+                : SummerAOTEntities.KRUGER.create(world);
         if (titan == null) {
-            player.sendMessage(Text.literal("SummerAOT: nao foi possivel criar Krugger Titan."), false);
-            SummerAOTMod.LOGGER.error("SummerAOT: falha na criacao de Krugger para {}", player.getName().getString());
+            player.sendMessage(Text.literal("SummerAOT: nao foi possivel criar o tita selecionado."), false);
+            SummerAOTMod.LOGGER.error("SummerAOT: falha na criacao de tita para {}", player.getName().getString());
             return;
         }
 
@@ -96,13 +104,13 @@ public abstract class KruggerNetworkingMixin {
         titan.setHardeningMode(0);
 
         if (!world.spawnEntity(titan)) {
-            player.sendMessage(Text.literal("SummerAOT: falha ao inserir Krugger no mundo."), false);
+            player.sendMessage(Text.literal("SummerAOT: falha ao inserir tita no mundo."), false);
             return;
         }
         ModNetworking.spawnShiftLightning(world, x, y, z);
         titan.spawnHitboxes();
         titan.onPlayerShift(player);
-        SummerAOTMod.LOGGER.info("SummerAOT: {} transformado em Krugger Titan pelo fluxo nativo do DAOT",
-                player.getName().getString());
+        SummerAOTMod.LOGGER.info("SummerAOT: {} transformado em {} Titan pelo fluxo nativo do DAOT",
+                player.getName().getString(), grishaSelected ? "Grisha" : "Krugger");
     }
 }
