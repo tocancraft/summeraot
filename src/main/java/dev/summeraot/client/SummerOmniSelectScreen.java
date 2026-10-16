@@ -5,6 +5,7 @@ import daot.BloodlineType;
 import daot.TitanPowerType;
 import dev.summeraot.network.KruggerSelectC2SPayload;
 import dev.summeraot.network.GrishaSelectC2SPayload;
+import dev.summeraot.network.ArminSelectC2SPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -58,7 +59,8 @@ public final class SummerOmniSelectScreen extends Screen {
     }
 
     private int total() { return natives.size() + (OmniKruggerClientState.owned ? 1 : 0)
-            + (OmniKruggerClientState.grishaOwned ? 1 : 0); }
+            + (OmniKruggerClientState.grishaOwned ? 1 : 0)
+            + (OmniKruggerClientState.arminOwned ? 1 : 0); }
     private int columns() { return Math.max(1, Math.min(5, Math.min(total(), Math.max(1, (width - 16 + GAP) / (CARD_W + GAP))))); }
     private int rows() { return (total() + columns() - 1) / columns(); }
     private int gridW() { return columns() * CARD_W + (columns() - 1) * GAP; }
@@ -71,6 +73,9 @@ public final class SummerOmniSelectScreen extends Screen {
     private boolean hasKruggerSlot(int index) { return OmniKruggerClientState.owned && index == natives.size(); }
     private boolean hasGrishaSlot(int index) { return OmniKruggerClientState.grishaOwned
             && index == natives.size() + (OmniKruggerClientState.owned ? 1 : 0); }
+    private boolean hasArminSlot(int index) { return OmniKruggerClientState.arminOwned
+            && index == natives.size() + (OmniKruggerClientState.owned ? 1 : 0)
+                  + (OmniKruggerClientState.grishaOwned ? 1 : 0); }
     private boolean ackerman() { return client != null && client.player != null
             && BloodlineClientData.get(client.player.getUuid()) == BloodlineType.ACKERMAN; }
     private BloodlineType bloodline() { return client != null && client.player != null
@@ -107,27 +112,31 @@ public final class SummerOmniSelectScreen extends Screen {
         final int x = xOf(index), y = yOf(index);
         boolean krugger = hasKruggerSlot(index);
         boolean grisha = hasGrishaSlot(index);
-        TitanPowerType power = (krugger || grisha) ? null : natives.get(index);
+        boolean armin = hasArminSlot(index);
+        TitanPowerType power = (krugger || grisha || armin) ? null : natives.get(index);
         boolean active = !editMode && (krugger ? OmniKruggerClientState.displayedKrugger()
                 : grisha ? OmniKruggerClientState.displayedGrisha()
+                : armin ? OmniKruggerClientState.displayedArmin()
                 : !OmniKruggerClientState.displayedKrugger()
                     && !OmniKruggerClientState.displayedGrisha()
+                    && !OmniKruggerClientState.displayedArmin()
                     && power.ordinal() == nativeSelected());
         boolean hover = inside(x, y, CARD_W, CARD_H, mx, my);
-        int color = krugger ? 0xffdfce50 : grisha ? 0xffd1aa87 : titanColor(power);
+        int color = krugger ? 0xffdfce50 : grisha ? 0xffd1aa87 : armin ? 0xffff6666 : titanColor(power);
         int border = active ? 0xffffff55 : hover && !blocked ? 0xffeeeeee : color;
         draw.fill(x, y, x + CARD_W, y + CARD_H, border);
         draw.fill(x + 2, y + 2, x + CARD_W - 2, y + CARD_H - 2, 0xff202020);
-        if (editMode && power == pendingSwap && !krugger && !grisha) {
+        if (editMode && power == pendingSwap && !krugger && !grisha && !armin) {
             draw.fill(x + 2, y + 2, x + CARD_W - 2, y + CARD_H - 2, 0xff3f3c22);
         }
-        String icon = krugger ? "krugger" : grisha ? "grisha" : power.getTagName();
+        String icon = krugger ? "krugger" : grisha ? "grisha" : armin ? "armin" : power.getTagName();
         Identifier tex = Identifier.of("omnishifter", "textures/gui/titan_icons/" + icon + ".png");
         // This is the same 64x64 GUI draw call used by OmniShifter 1.3.0.
         draw.drawTexture(tex, x + 8, y + 5, 0f, 0f, 64, 64, 64, 64);
-        if (!krugger && !grisha) draw.drawTextWithShadow(textRenderer,
+        if (!krugger && !grisha && !armin) draw.drawTextWithShadow(textRenderer,
                 Text.literal("[" + (index + 1) + "]"), x + 4, y + 4, 0xffaaaaaa);
-        String name = krugger ? "Krugger Titan" : grisha ? "Grisha Titan" : power.getDisplayName();
+        String name = krugger ? "Krugger Titan" : grisha ? "Grisha Titan"
+                : armin ? "Armin Colossal" : power.getDisplayName();
         draw.drawCenteredTextWithShadow(textRenderer, Text.literal(name), x + CARD_W / 2, y + 80,
                 active ? 0xffffff55 : color);
         if (active) draw.drawCenteredTextWithShadow(textRenderer, Text.literal("✦ ACTIVE"),
@@ -192,7 +201,7 @@ public final class SummerOmniSelectScreen extends Screen {
         for (int index = 0; index < total(); index++) {
             if (inside(xOf(index), yOf(index), CARD_W, CARD_H, mouseX, mouseY)) {
                 if (editMode) {
-                    if (hasKruggerSlot(index) || hasGrishaSlot(index)) return true; // Independent powers cannot be reordered.
+                    if (hasKruggerSlot(index) || hasGrishaSlot(index) || hasArminSlot(index)) return true; // Independent powers cannot be reordered.
                     TitanPowerType clicked = natives.get(index);
                     if (pendingSwap == null) pendingSwap = clicked;
                     else if (pendingSwap == clicked) pendingSwap = null;
@@ -222,10 +231,15 @@ public final class SummerOmniSelectScreen extends Screen {
             if (OmniKruggerClientState.displayedGrisha()) return;
             ClientPlayNetworking.send(new GrishaSelectC2SPayload());
             OmniKruggerClientState.previewGrisha();
+        } else if (hasArminSlot(index)) {
+            if (OmniKruggerClientState.displayedArmin()) return;
+            ClientPlayNetworking.send(new ArminSelectC2SPayload());
+            OmniKruggerClientState.previewArmin();
         } else {
             TitanPowerType power = natives.get(index);
             if (!OmniKruggerClientState.displayedKrugger()
                     && !OmniKruggerClientState.displayedGrisha()
+                    && !OmniKruggerClientState.displayedArmin()
                     && power.ordinal() == nativeSelected()) return;
             if (SummerOmniPackets.sendSelect(power)) {
                 OmniKruggerClientState.previewNative(power.ordinal());

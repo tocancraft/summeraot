@@ -1,0 +1,48 @@
+{
+  "version": "0.0.5-alpha.1",
+  "base": "0.0.4 (teste em jogo informado pelo usuario)",
+  "java_sources_parsed": 45,
+  "java_syntax_errors": 0,
+  "ui_selection_unit_test": "PASS",
+  "spring_animation_count": 12,
+  "total_animation_count": 13,
+  "compatibility_animation": "arm_drag from DAOT 2.5.0",
+  "spring_bones": 24,
+  "colossal_dimensions_blocks": [
+    16,
+    60
+  ],
+  "native_shift": "DAOT COLOSSAL via ModifyVariable spawnColossalTitan",
+  "assets": [
+    "geo/armincolossal.geo.json",
+    "animations/armincolossal.animation.json",
+    "textures/entity/armincolossal.png"
+  ],
+  "embedded_icon": "omnishifter:textures/gui/titan_icons/armin.png",
+  "full_gradle_build": "not_run",
+  "in_game_test": "not_run",
+  "modified_files": [
+    "gradle.properties",
+    "src/main/resources/fabric.mod.json",
+    "src/main/resources/summeraot.mixins.json",
+    "src/main/resources/assets/summeraot/geo/armincolossal.geo.json",
+    "src/main/resources/assets/summeraot/animations/armincolossal.animation.json",
+    "src/main/resources/assets/summeraot/textures/entity/armincolossal.png",
+    "src/main/java/dev/summeraot/SummerAOTMod.java",
+    "src/main/java/dev/summeraot/SummerAOTPower.java",
+    "src/main/java/dev/summeraot/mixin/KruggerNetworkingMixin.java",
+    "src/main/java/dev/summeraot/mixin/ArminColossalSpawnMixin.java",
+    "src/main/java/dev/summeraot/network/OmniKruggerNetwork.java",
+    "src/main/java/dev/summeraot/network/KruggerStateS2CPayload.java",
+    "src/main/java/dev/summeraot/network/ArminSelectC2SPayload.java",
+    "src/main/java/dev/summeraot/client/SummerAOTClient.java",
+    "src/main/java/dev/summeraot/client/SummerOmniSelectScreen.java",
+    "src/main/java/dev/summeraot/client/ActivePowerPreview.java",
+    "src/main/java/dev/summeraot/client/OmniKruggerClientState.java",
+    "src/main/java/dev/summeraot/armin/ArminColossalEntities.java",
+    "src/main/java/dev/summeraot/armin/ArminCommands.java",
+    "src/main/java/dev/summeraot/armin/entity/ArminColossalTitanEntity.java",
+    "src/main/java/dev/summeraot/armin/client/ArminColossalTitanModel.java",
+    "src/main/java/dev/summeraot/armin/client/ArminColossalTitanRenderer.java"
+  ]
+}

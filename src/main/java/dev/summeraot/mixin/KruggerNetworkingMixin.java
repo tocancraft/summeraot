@@ -53,6 +53,10 @@ public abstract class KruggerNetworkingMixin {
                     || SummerAOTPower.isGrishaSelected(serverPlayer))) {
             return true;
         }
+        if (type == TitanPowerType.COLOSSAL && player instanceof ServerPlayerEntity serverPlayer
+                && SummerAOTPower.isArminSelected(serverPlayer)) {
+            return true;
+        }
         return PowerAuthority.hasShifter(player, type);
     }
 

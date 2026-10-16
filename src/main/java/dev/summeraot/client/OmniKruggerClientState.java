@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 
 /** Server-confirmed state plus a short-lived, reversible UI-only click preview. */
 public final class OmniKruggerClientState {
+    public static boolean arminOwned = false;
+    public static boolean arminSelected = false;
     public static boolean grishaOwned = false;
     public static boolean grishaSelected = false;
     public static boolean owned = false;
@@ -25,6 +27,8 @@ public final class OmniKruggerClientState {
     }
 
     private static void reset() {
+        arminOwned = false;
+        arminSelected = false;
         grishaOwned = false;
         grishaSelected = false;
         owned = false;
@@ -45,6 +49,14 @@ public final class OmniKruggerClientState {
         PREVIEW.grishaClicked(System.currentTimeMillis());
     }
 
+    public static void previewArmin() {
+        PREVIEW.arminClicked(System.currentTimeMillis());
+    }
+
+    public static boolean displayedArmin() {
+        return PREVIEW.displayedArmin(arminSelected, System.currentTimeMillis());
+    }
+
     public static boolean displayedGrisha() {
         return PREVIEW.displayedGrisha(grishaSelected, System.currentTimeMillis());
     }
@@ -62,15 +74,18 @@ public final class OmniKruggerClientState {
     }
 
     private static void update(KruggerStateS2CPayload payload) {
+        arminOwned = payload.arminOwned();
+        arminSelected = payload.arminSelected();
         grishaOwned = payload.grishaOwned();
         grishaSelected = payload.grishaSelected();
         owned = payload.owned();
         selected = payload.selected();
         nativePowerOrdinal = payload.nativePowerOrdinal();
         cooldownEndsAt = payload.cooldownEndsAt();
-        PREVIEW.serverSync(selected, grishaSelected, nativePowerOrdinal);
+        PREVIEW.serverSync(selected, grishaSelected, arminSelected, nativePowerOrdinal);
         if ((!owned && PREVIEW.displayedKrugger(false, System.currentTimeMillis()))
-                || (!grishaOwned && PREVIEW.displayedGrisha(false, System.currentTimeMillis()))) {
+                || (!grishaOwned && PREVIEW.displayedGrisha(false, System.currentTimeMillis()))
+                || (!arminOwned && PREVIEW.displayedArmin(false, System.currentTimeMillis()))) {
             PREVIEW.reset(); // Server revoked Krugger while its selection was pending.
         }
         try {

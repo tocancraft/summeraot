@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [{"item": "dannys-aot:empty_syringe"}],
+  "result": {"id": "summeraot:empty_power_syringe", "count": 1}
+}

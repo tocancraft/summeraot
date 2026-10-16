@@ -8,6 +8,8 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
+import dev.summeraot.npc.SummerNpcLogic;
+import dev.summeraot.npc.SummerTitanCombat;
 
 /**
  * Krugger Titan: reutiliza movimentacao e ataques do DAOT, mas nao pode
@@ -109,5 +111,27 @@ public class KrugerTitanEntity extends AttackTitanEntity {
                 : player.getName().getString() + " - Krugger Titan";
             bossBar.setName(Text.literal(label));
         }
+    }
+
+    @Override
+    protected void initGoals() {
+        // O DAOT deixa os goals vazios para o titan controlado pelo jogador.
+        // Estes goals sao automaticamente inativos enquanto houver shifter.
+        this.goalSelector.add(1, new SummerTitanCombat.AssaultGoal(this));
+        this.targetSelector.add(1, new SummerTitanCombat.RetaliateGoal(this));
+        this.targetSelector.add(2, new SummerTitanCombat.PlayerTargetGoal(this));
+    }
+
+    @Override
+    public void remove(net.minecraft.entity.Entity.RemovalReason reason) {
+        SummerTitanCombat.cleanup(this);
+        super.remove(reason);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        SummerNpcLogic.tickNpcTitan(this);
+        SummerTitanCombat.tick(this);
     }
 }

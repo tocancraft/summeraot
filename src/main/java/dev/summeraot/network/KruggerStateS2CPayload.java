@@ -7,7 +7,7 @@ import net.minecraft.util.Identifier;
 
 /** Server-authoritative state so the Omni UI shows only powers actually owned. */
 public record KruggerStateS2CPayload(boolean owned, boolean selected, int nativePowerOrdinal, long cooldownEndsAt,
-                                    boolean grishaOwned, boolean grishaSelected)
+                                    boolean grishaOwned, boolean grishaSelected, boolean arminOwned, boolean arminSelected)
         implements CustomPayload {
     public static final Id<KruggerStateS2CPayload> ID =
             new Id<>(Identifier.of("summeraot", "krugger_state"));
@@ -19,7 +19,9 @@ public record KruggerStateS2CPayload(boolean owned, boolean selected, int native
                 buf.writeLong(packet.cooldownEndsAt());
                 buf.writeBoolean(packet.grishaOwned());
                 buf.writeBoolean(packet.grishaSelected());
+                buf.writeBoolean(packet.arminOwned());
+                buf.writeBoolean(packet.arminSelected());
             }, buf -> new KruggerStateS2CPayload(buf.readBoolean(), buf.readBoolean(), buf.readVarInt(), buf.readLong(),
-                buf.readBoolean(), buf.readBoolean()));
+                buf.readBoolean(), buf.readBoolean(), buf.readBoolean(), buf.readBoolean()));
     @Override public Id<? extends CustomPayload> getId() { return ID; }
 }

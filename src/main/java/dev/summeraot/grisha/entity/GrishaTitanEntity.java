@@ -7,6 +7,8 @@ import net.minecraft.text.Text;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.world.World;
+import dev.summeraot.npc.SummerNpcLogic;
+import dev.summeraot.npc.SummerTitanCombat;
 
 /**
  * O Grisha eh um shifter novo, independente do Attack e do Krugger.
@@ -62,6 +64,22 @@ public final class GrishaTitanEntity extends AttackTitanEntity {
         }
     }
 
+
+    @Override
+    protected void initGoals() {
+        // O DAOT deixa os goals vazios para o titan controlado pelo jogador.
+        // Estes goals sao automaticamente inativos enquanto houver shifter.
+        this.goalSelector.add(1, new SummerTitanCombat.AssaultGoal(this));
+        this.targetSelector.add(1, new SummerTitanCombat.RetaliateGoal(this));
+        this.targetSelector.add(2, new SummerTitanCombat.PlayerTargetGoal(this));
+    }
+
+    @Override
+    public void remove(net.minecraft.entity.Entity.RemovalReason reason) {
+        SummerTitanCombat.cleanup(this);
+        super.remove(reason);
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -71,6 +89,8 @@ public final class GrishaTitanEntity extends AttackTitanEntity {
         if (isTitanClimbing()) {
             super.setTitanClimbing(false);
         }
+        SummerNpcLogic.tickNpcTitan(this);
+        SummerTitanCombat.tick(this);
     }
 
     @Override

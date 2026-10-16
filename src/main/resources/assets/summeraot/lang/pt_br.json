@@ -2,5 +2,18 @@
   "entity.summeraot.grisha_titan": "Titã de Ataque do Grisha",
   "entity.summeraot.grisha_titan_nape": "Nuca do Titã do Grisha",
   "entity.summeraot.grisha_titan_eye": "Olhos do Titã do Grisha",
-  "entity.summeraot.grisha_titan_grab": "Agarrão do Titã do Grisha"
+  "entity.summeraot.grisha_titan_grab": "Agarrão do Titã do Grisha",
+  "entity.summeraot.krugger_villager": "Krugger - Aldeao Shifter",
+  "entity.summeraot.grisha_villager": "Grisha - Aldeao Shifter",
+  "entity.summeraot.armin_villager": "Armin - Aldeao Shifter",
+  "item.summeraot.krugger_villager_spawn_egg": "Ovo de Aldeao Krugger",
+  "item.summeraot.grisha_villager_spawn_egg": "Ovo de Aldeao Grisha",
+  "item.summeraot.armin_villager_spawn_egg": "Ovo de Aldeao Armin",
+  "item.summeraot.krugger_titan_spawn_egg": "Ovo de Tita Krugger",
+  "item.summeraot.grisha_titan_spawn_egg": "Ovo de Tita Grisha",
+  "item.summeraot.armin_colossal_titan_spawn_egg": "Ovo de Colossal do Armin",
+  "item.summeraot.krugger_syringe": "Seringa do Tita Krugger",
+  "item.summeraot.grisha_syringe": "Seringa do Tita Grisha",
+  "item.summeraot.armin_syringe": "Seringa do Tita Armin",
+  "item.summeraot.empty_power_syringe": "Seringa Vazia (SummerAOT)"
 }

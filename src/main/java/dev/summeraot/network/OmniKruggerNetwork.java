@@ -33,11 +33,14 @@ public final class OmniKruggerNetwork {
     public static void register() {
         PayloadTypeRegistry.playC2S().register(KruggerSelectC2SPayload.ID, KruggerSelectC2SPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(GrishaSelectC2SPayload.ID, GrishaSelectC2SPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(ArminSelectC2SPayload.ID, ArminSelectC2SPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(KruggerStateS2CPayload.ID, KruggerStateS2CPayload.CODEC);
         ServerPlayNetworking.registerGlobalReceiver(KruggerSelectC2SPayload.ID, (payload, context) ->
                 context.server().execute(() -> selectKrugger(context.player())));
         ServerPlayNetworking.registerGlobalReceiver(GrishaSelectC2SPayload.ID, (payload, context) ->
                 context.server().execute(() -> selectGrisha(context.player())));
+        ServerPlayNetworking.registerGlobalReceiver(ArminSelectC2SPayload.ID, (payload, context) ->
+                context.server().execute(() -> selectArmin(context.player())));
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
                 server.execute(() -> sync(handler.player)));
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> sync(newPlayer));
@@ -149,6 +152,36 @@ public final class OmniKruggerNetwork {
         sync(player);
     }
 
+    private static void selectArmin(ServerPlayerEntity player) {
+        if (!SummerAOTPower.hasArmin(player)) {
+            player.sendMessage(Text.literal("SummerAOT: voce nao possui o Colossal do Armin."), true);
+            sync(player);
+            return;
+        }
+        if (SummerAOTPower.isArminSelected(player)) {
+            sync(player);
+            return;
+        }
+        if (!player.isAlive() || player.isSpectator() || player.hasVehicle()) {
+            player.sendMessage(Text.literal("SummerAOT: nao e possivel trocar enquanto transformado."), true);
+            sync(player);
+            return;
+        }
+        long now = System.currentTimeMillis();
+        long previous = nativeCooldownSince(player.getUuid());
+        if (!player.isCreative() && now - previous < COOLDOWN_MS) {
+            long remaining = Math.max(1, (COOLDOWN_MS - (now - previous) + 999) / 1000);
+            player.sendMessage(Text.literal("SummerAOT: aguarde " + remaining + "s para trocar de tita."), true);
+            sync(player);
+            return;
+        }
+        SummerAOTPower.selectArmin(player);
+        if (!player.isCreative()) setNativeCooldownSince(player.getUuid(), now);
+        strikeCosmeticLightning(player);
+        player.sendMessage(Text.literal("Poder ativo: Colossal do Armin"), true);
+        sync(player);
+    }
+
     private static void strikeCosmeticLightning(ServerPlayerEntity player) {
         if (!(player.getWorld() instanceof ServerWorld world)) return;
         LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
@@ -170,7 +203,8 @@ public final class OmniKruggerNetwork {
                 SummerAOTPower.hasKrugger(player),
                 SummerAOTPower.isKruggerSelected(player),
                 nativeSelectedOrdinal(player), ends,
-                SummerAOTPower.hasGrisha(player), SummerAOTPower.isGrishaSelected(player)));
+                SummerAOTPower.hasGrisha(player), SummerAOTPower.isGrishaSelected(player),
+                SummerAOTPower.hasArmin(player), SummerAOTPower.isArminSelected(player)));
     }
 
     /** Read the authoritative native active power from the Omni persistent state. */
