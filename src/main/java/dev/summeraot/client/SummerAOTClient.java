@@ -35,6 +35,7 @@ import net.minecraft.client.render.entity.EntityRenderer;
 public final class SummerAOTClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        dev.summeraot.SummerAOTMod.LOGGER.info("SUMMERAOT_CLIENT_VISUAL_ALPHA4_READY: Grisha canonicamente substituido");
         // Mesmo efeito nuclear Effekseer da transformacao Colossal do DAOT.
         ClientPlayNetworking.registerGlobalReceiver(NpcColossalShiftS2CPayload.ID,
                 (payload, context) -> context.client().execute(() -> {

@@ -1,0 +1,24 @@
+SummerAOT 0.0.8-alpha.6 - HOTFIX JAW TEXTURE
+
+Erro corrigido: o DAOT usa namespace dannys-aot, nao daot.
+A referencia EXATA verificada no TestShifterTitanModel.class do DAOT 2.5.0 e:
+dannys-aot:textures/entity/jawtitan.png
+
+Este hotfix adiciona:
+src/main/resources/assets/dannys-aot/textures/entity/jawtitan.png
+
+Os tres arquivos INCORRETOS assets/daot/textures/entity/jaw*.png foram REMOVIDOS.
+A textura da nuca endurecida (jawtitan_hardened_nape.png) nao foi alterada.
+
+NOTA: trata-se de override de recurso proveniente de outro mod. O loader/pacotes
+de recursos devem dar prioridade ao SummerAOT, e um pacote de recursos de maior
+prioridade pode sobrepor a imagem. Se persistir, precisaremos ajustar a
+prioridade ou redirecionar por mixin no renderer.
+
+Para usar o patch, extraia na raiz do projeto. Para remover os arquivos
+antigos da alpha.6, exclua a pasta src/main/resources/assets/daot/textures/entity
+se ela contiver APENAS jaw.png, jaw_titan.png, jawtitan.png.
+
+Compilacao: .\gradlew.bat --no-daemon clean build
+Verifique o novo arquivo no JAR via unzip/7zip e remova JARs antigos do
+SummerAOT das pastas mods do cliente e do servidor.

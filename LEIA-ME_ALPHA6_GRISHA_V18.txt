@@ -1,0 +1,15 @@
+SummerAOT 0.0.8-alpha.6 — revisão do Grisha Titan
+
+Base: Alpha 6 com hotfix do Jaw Titan.
+Alteração desta revisão:
+- substituição da geometria do Grisha por `model.geo.json`
+- substituição da textura do Grisha por `grisha_bestial_oito_gomos_abdomen_v18.png`
+
+Arquivos finais no projeto:
+- src/main/resources/assets/summeraot/geo/grishtitan.geo.json
+- src/main/resources/assets/summeraot/textures/entity/grishtitan.png
+
+Preservado:
+- animations/attack4titan.animation.json
+- ajustes de combate do Grisha
+- hotfix do Jaw Titan

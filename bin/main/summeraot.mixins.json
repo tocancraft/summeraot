@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "dev.summeraot.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "KruggerNetworkingMixin",
+    "OmniNativeSelectMixin",
+    "ArminColossalSpawnMixin",
+    "ModNetworkingExplosionInvoker",
+    "ColossalNukeAccessor",
+    "AttackTitanTimersAccessor"
+  ],
+  "client": [
+    "KruggerHudMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

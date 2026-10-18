@@ -1,0 +1,14 @@
+SummerAOT 0.0.8-alpha.6
+
+Alteração desta versão:
+- Substituição da textura do Jaw Titan do DAOT pela textura enviada pelo usuário.
+
+Arquivos adicionados para override de recursos do DAOT:
+- src/main/resources/assets/daot/textures/entity/jaw.png
+- src/main/resources/assets/daot/textures/entity/jaw_titan.png
+- src/main/resources/assets/daot/textures/entity/jawtitan.png
+
+Observação:
+- Mantive múltiplos nomes de arquivo compatíveis para garantir o override da textura
+  caso o DAOT utilize uma dessas convenções internas.
+- Nenhuma lógica, geo ou animação foi alterada nesta alpha.

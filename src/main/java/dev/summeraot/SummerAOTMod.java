@@ -34,6 +34,6 @@ public final class SummerAOTMod implements ModInitializer {
         KrugerCommands.register();
         GrishaCommands.register();
         ArminCommands.register();
-        LOGGER.info("SummerAOT 0.0.7-alpha.1: aldeoes e ovos das formas originais do DAOT.");
+        LOGGER.info("SummerAOT 0.0.8-alpha.4 (Grisha canonico): inicializacao concluida.");
     }
 }

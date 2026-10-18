@@ -2,6 +2,7 @@ package dev.summeraot.grisha.entity;
 
 import daot.AttackTitanEntity;
 import dev.summeraot.grisha.GrishaEntities;
+import dev.summeraot.mixin.AttackTitanTimersAccessor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.entity.EntityType;
@@ -19,6 +20,46 @@ public final class GrishaTitanEntity extends AttackTitanEntity {
     // IDs da política Krugger/Spring: 6=endurecimento, 9=Berserker.
     private static final int ABILITY_HARDENING = 6;
     private static final int ABILITY_BERSERKER = 9;
+
+    // 70% da velocidade original; danos normais e habilidades = 160%.
+    private static final float ATTACK_DAMAGE_MULTIPLIER = 1.60F;
+    private static final int SLOW_TICKS_PER_TEN = 3;
+
+    @Override
+    protected float getAttackDamageMultiplier() {
+        return super.getAttackDamageMultiplier() * ATTACK_DAMAGE_MULTIPLIER;
+    }
+
+    /**
+     * O DAOT sincroniza a janela de ataque, o cooldown e o impacto por tres
+     * temporizadores privados. Pausar 3 em cada 10 incrementos/decrementos
+     * torna os ataques 30% mais lentos de ponta a ponta, sem desacelerar
+     * movimento, salto ou a recuperacao de vida.
+     */
+    private void applyGrishaAttackPacing() {
+        if (getWorld().isClient || this.age % 10 >= SLOW_TICKS_PER_TEN) {
+            return;
+        }
+        AttackTitanTimersAccessor timers = (AttackTitanTimersAccessor) (Object) this;
+        // A defesa (numero 5) usa Integer.MAX_VALUE como cooldown infinito.
+        if (getAttackNumber() == 5) {
+            return;
+        }
+        int cooldown = timers.summeraot$getAttackCooldown();
+        if (cooldown > 0 && cooldown < Integer.MAX_VALUE - 1) {
+            timers.summeraot$setAttackCooldown(cooldown + 1);
+        }
+        int animTicks = timers.summeraot$getAttackAnimationTicks();
+        if (animTicks > 0 && animTicks < Integer.MAX_VALUE - 1) {
+            timers.summeraot$setAttackAnimationTicks(animTicks + 1);
+        }
+        if (isTitanAttacking() && !timers.summeraot$isAttackEffectTriggered()) {
+            int effectTimer = timers.summeraot$getAttackEffectTimer();
+            if (effectTimer > 0) {
+                timers.summeraot$setAttackEffectTimer(effectTimer - 1);
+            }
+        }
+    }
 
     public GrishaTitanEntity(EntityType<? extends HostileEntity> type, World world) {
         super(type, world);
@@ -82,6 +123,7 @@ public final class GrishaTitanEntity extends AttackTitanEntity {
 
     @Override
     public void tick() {
+        applyGrishaAttackPacing();
         super.tick();
         if (getHardeningMode() != 0) {
             super.setHardeningMode(0);

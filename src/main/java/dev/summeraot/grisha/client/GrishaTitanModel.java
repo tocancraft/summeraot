@@ -1,14 +1,20 @@
 package dev.summeraot.grisha.client;
 
 import dev.summeraot.grisha.entity.GrishaTitanEntity;
+import dev.summeraot.SummerAOTMod;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib.model.GeoModel;
 
 /** Os 37 clipes originais de Attack4Titan do SpringAOT. */
 public final class GrishaTitanModel extends GeoModel<GrishaTitanEntity> {
-    private static final Identifier MODEL = Identifier.of("summeraot", "geo/attack4titan.geo.json");
-    private static final Identifier TEXTURE = Identifier.of("summeraot", "textures/entity/attack4titan.png");
+    private static final Identifier MODEL = Identifier.of("summeraot", "geo/grishtitan.geo.json");
+    private static final Identifier TEXTURE = Identifier.of("summeraot", "textures/entity/grishtitan.png");
     private static final Identifier ANIMATIONS = Identifier.of("summeraot", "animations/attack4titan.animation.json");
+
+    /** Mensagem de diagnóstico: confirma que o cliente carregou o renderer atualizado. */
+    public GrishaTitanModel() {
+        SummerAOTMod.LOGGER.info("SUMMERAOT_GRISHA_VISUAL_V18_ACTIVE: geo={} texture={}", MODEL, TEXTURE);
+    }
 
     @Override
     public Identifier getModelResource(GrishaTitanEntity entity) {

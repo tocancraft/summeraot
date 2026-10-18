@@ -1,0 +1,21 @@
+SummerAOT 0.0.8-alpha.2 — Ajuste de combate do Grisha
+
+APLICAR SOBRE: SummerAOT 0.0.8-alpha.1.
+
+Mudancas:
+- Dano de ataques/skills ofensivas (punhos, chutes, impacto do smash) x1,60.
+- Velocidade dos ataques: 70% (duracao aproximada x1,42857).
+- 9 clipes ofensivos da animacao do Grisha tiveram seus keyframes escalados na mesma proporcao.
+- Ataques de outros titas, transformacao, locomocao, skins, modelos e NPCs nao foram modificados.
+- Modificadores implementados por accessor Mixin direcionado EXCLUSIVAMENTE ao Grisha, sobre DAOT 2.5.0.
+
+ATENCAO: Este pacote NAO inclui a imagem de textura mostrada na ultima mensagem, pois a
+imagem foi exibida apenas como preview, sem arquivo PNG original acessivel para substituicao
+pixel-perfect. Aguarde o patch visual depois de enviar o arquivo PNG em anexo.
+
+Instalacao:
+1. Extrair este ZIP na raiz do projeto, preservando a estrutura de diretorios.
+2. Rodar: .\gradlew.bat --no-daemon clean build
+3. Testar NPC e jogador, habilidade 1 (smash), habilidade 2 (kick), combos e ataques armados.
+
+STATUS: Testes estruturais e de JSON efetuados; build Gradle e testes em jogo pendentes.
